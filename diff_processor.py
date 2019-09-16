@@ -94,15 +94,26 @@ class DiffProcessor:
 
     def analyze_video(self, video_path):
         diff_values = []
+        total_t = 0
         with VideoProcessor(video_path) as video:
             prev_frame = next(video)
+
+            t1 = time.time()
             prev_frame = self.get_frame_feature(prev_frame)
+            t2 = time.time()
+            total_t += t2 - t1
+
             for frame in video:
+
+                t3 = time.time()
                 frame = self.get_frame_feature(frame)
                 diff_value = self.cal_frame_diff(frame, prev_frame)
+                t4 = time.time()
+                total_t  += t4 - t3
+
                 diff_values.append(diff_value)
                 prev_frame = frame
-        return diff_values
+        return diff_values, total_t
 
     def process_video(self, video_path):
         if self.selection == 'dynamic':
